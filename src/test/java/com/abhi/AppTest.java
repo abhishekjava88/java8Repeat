@@ -41,4 +41,11 @@ class AppTest {
         double expectedResult = 110.0;
         assertEquals(result.get(CANCELLED),expectedResult,0.01);
     }
+
+    @Test
+    void testOrderIdsByStatus() {
+       Map<Status,List<Long>> result = App.orderIdsByStatus(orders);
+       List<Long> pendingIds = List.of(1L, 2L, 3L);
+       assertEquals(result.get(PENDING),pendingIds);
+    }
 }

@@ -43,4 +43,8 @@ public class App
     public static Map<Status, Double> getOrderByStatus(List<Order> orders){
         return orders.stream().filter(amountFilter).collect(Collectors.groupingBy(Order::getStatus,Collectors.summingDouble(Order::getAmount)));
     }
+
+    public static Map<Status, List<Long>> orderIdsByStatus(List<Order> orders){
+        return orders.stream().collect(Collectors.groupingBy(Order::getStatus,Collectors.mapping(Order::getOrderId,Collectors.toList())));
+    }
 }
