@@ -48,4 +48,11 @@ class AppTest {
        List<Long> pendingIds = List.of(1L, 2L, 3L);
        assertEquals(result.get(PENDING),pendingIds);
     }
+
+    @Test
+    void testCountByStatus() {
+        Map<Status, Long> result = App.countByStatus(orders);
+        Long expectedResult = 4l;
+        assertEquals(result.get(CANCELLED),expectedResult);
+    }
 }

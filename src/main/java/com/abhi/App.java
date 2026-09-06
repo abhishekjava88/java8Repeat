@@ -47,4 +47,8 @@ public class App
     public static Map<Status, List<Long>> orderIdsByStatus(List<Order> orders){
         return orders.stream().collect(Collectors.groupingBy(Order::getStatus,Collectors.mapping(Order::getOrderId,Collectors.toList())));
     }
+
+    public static Map<Status, Long> countByStatus(List<Order> orders){
+        return orders.stream().collect(Collectors.groupingBy(Order::getStatus,Collectors.counting()));
+    }
 }
