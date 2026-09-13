@@ -55,4 +55,43 @@ class AppTest {
         Long expectedResult = 4l;
         assertEquals(result.get(CANCELLED),expectedResult);
     }
+
+    @Test
+    void testSplitByHighValue() {
+        Map<Boolean, List<Order>> result = App.splitByHighValue(orders,34);
+        List<Order> trueList = result.get(true);
+        List<Order> falseList = result.get(false);
+        Order order = new Order(8,CANCELLED,46.0);
+        assertTrue(trueList.contains(order));
+        assertFalse(falseList.contains(order));
+
+    }
+
+    @Test
+    void testSummarize() {
+       String result = App.summarize(orders);
+       String expected = "1,2,3,4,5,6,7,8,9,10";
+       assertEquals(result,expected);
+    }
+
+
+    @Test
+    void pendingAndHighValue() {
+       List<Order> actualResults = App.pendingAndHighValue(orders,61.0);
+       List<Order> expectedResults = List.of(new Order(2,PENDING,89));
+       assertEquals(expectedResults,actualResults);
+    }
+
+    @Test
+    void sumUsingReduce() {
+        Double actualResults = App.sumUsingReduce(orders);
+        Double expected = 442.0;
+        assertEquals(expected,actualResults,0.01);
+    }
+
+    @Test
+    void hasOverdueHighValue() {
+       boolean actaulResults = App.hasOverdueHighValue(orders,61.0);
+       assertTrue(actaulResults);
+    }
 }

@@ -3,8 +3,8 @@ package com.abhi;
 import com.abhi.model.Order;
 import com.abhi.model.Status;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -17,6 +17,10 @@ import static com.abhi.model.Status.*;
 public class App 
 {
     public static Predicate<Order> amountFilter = order -> order.getAmount() > 0;
+    public static Predicate<Order> pendingFilter = order -> order.getStatus() == PENDING;
+    //public static Comparator<Order> amountComparator = (a,b)-> a.
+
+
     public static void main( String[] args )
     {
 
@@ -37,6 +41,10 @@ public class App
         );
 
         System.out.println(getOrderByStatus(orders));
+        System.out.println(splitByHighValue(orders,25));
+        System.out.println(summarize(orders));
+        System.out.println(pendingAndHighValue(orders,61));
+        System.out.println(sumUsingReduce(orders));
 
     }
 
@@ -51,4 +59,28 @@ public class App
     public static Map<Status, Long> countByStatus(List<Order> orders){
         return orders.stream().collect(Collectors.groupingBy(Order::getStatus,Collectors.counting()));
     }
+
+    public static Map<Boolean, List<Order>> splitByHighValue(List<Order> orders, double threshold){
+        return orders.stream().collect(Collectors.partitioningBy(order -> order.getAmount()>threshold ));
+    }
+
+
+    public static String summarize(List<Order> orders){
+        return orders.stream().map(order -> String.valueOf(order.getOrderId())).collect(Collectors.joining(","));
+    }
+
+    public static List<Order> pendingAndHighValue(List<Order> orders, double threshold){
+        return orders.stream().filter(pendingFilter.and(order -> order.getAmount()>threshold)).toList();
+    }
+
+    public static double sumUsingReduce(List<Order> orders){
+        return orders.stream().map(Order::getAmount).reduce(0.0,(a,b) -> a+b);
+    }
+
+    public static boolean hasOverdueHighValue(List<Order> orders, double threshold){
+        return orders.stream().filter(pendingFilter).anyMatch(order -> order.getAmount()>threshold);
+    }
+
+
+
 }
