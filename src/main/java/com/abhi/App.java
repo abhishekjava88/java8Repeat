@@ -1,5 +1,6 @@
 package com.abhi;
 
+import com.abhi.exception.OrderNotFoundException;
 import com.abhi.model.Order;
 import com.abhi.model.Status;
 
@@ -97,19 +98,19 @@ public class App
     }
 
     public static double getOrderAmountOrDefault(List<Order> orders, long orderId, double defaultValue){
-        return orders.stream().filter(order -> order.getOrderId() == orderId).map(order -> order.getAmount()).findFirst().orElse(defaultValue);
+        return orders.stream().filter(order -> order.getOrderId() == orderId).map(Order::getAmount).findFirst().orElse(defaultValue);
     }
 
     public static Order getOrderOrThrow(List<Order> orders, long orderId){
-        return orders.stream().filter(order -> order.getOrderId() == orderId).findFirst().orElseThrow();
+        return orders.stream().filter(order -> order.getOrderId() == orderId).findFirst().orElseThrow(()->new OrderNotFoundException("Order not found with id "+orderId));
     }
 
     public static double getOrderAmountOrDefaultEager(List<Order> orders, long orderId, double defaultValue){
-        return orders.stream().filter(order -> order.getOrderId() == orderId).map(order -> order.getAmount()).findFirst().orElse(computeExpensiveDefault());
+        return orders.stream().filter(order -> order.getOrderId() == orderId).map(Order::getAmount).findFirst().orElse(computeExpensiveDefault());
     }
 
     public static double getOrderAmountOrDefaultLazy(List<Order> orders, long orderId, double defaultValue){
-        return orders.stream().filter(order -> order.getOrderId() == orderId).map(order -> order.getAmount()).findFirst().orElse(computeExpensiveDefault());
+        return orders.stream().filter(order -> order.getOrderId() == orderId).map(Order::getAmount).findFirst().orElseGet(()->computeExpensiveDefault());
     }
 
     private static double computeExpensiveDefault(){

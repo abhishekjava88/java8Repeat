@@ -1,5 +1,6 @@
 package com.abhi;
 
+import com.abhi.exception.OrderNotFoundException;
 import com.abhi.model.Order;
 import com.abhi.model.Status;
 import org.junit.jupiter.api.BeforeEach;
@@ -141,7 +142,7 @@ class AppTest {
 
     @Test
     void getOrderOrThrow() {
-       assertThrows(NoSuchElementException.class,()->App.getOrderOrThrow(orders,78));
+       assertThrows(OrderNotFoundException.class,()->App.getOrderOrThrow(orders,78));
     }
 
     @Test
