@@ -89,3 +89,21 @@ constants silently changes sort behavior everywhere that relies on natural
 ordering — a real, easy-to-miss bug source. If declaration order isn't
 meant to carry sort meaning, use an explicit `Comparator` (e.g. a priority map)
 instead of relying on natural enum ordering.
+
+
+Every lambda expression, at compile time, becomes a new object that implements whatever functional interface the context demands. The lambda syntax () -> ... or x -> ... isn't some special lightweight thing that skips object creation — under the hood, the compiler generates a class (or uses invokedynamic with a similar effect) that implements the target interface's single abstract method, and () -> App.getOrderOrThrow(orders, 999L) becomes an instance of that generated class.
+
+Concretely, for your example:
+
+java
+Executable action = () -> App.getOrderOrThrow(orders, 999L);
+
+is conceptually equivalent to the old-style anonymous class you'd have written before Java 8:
+
+java
+Executable action = new Executable() {
+@Override
+public void execute() throws Throwable {
+App.getOrderOrThrow(orders, 999L); // return value discarded, since execute() is void
+}
+};
