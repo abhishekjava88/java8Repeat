@@ -92,4 +92,29 @@ public class App
         return orders.stream().sorted(statusAndAmountComparator).toList();
     }
 
+    public static Optional<Order> findOrderById(List<Order> orders, long orderId){
+       return orders.stream().filter(order -> order.getOrderId() == orderId).findFirst();
+    }
+
+    public static double getOrderAmountOrDefault(List<Order> orders, long orderId, double defaultValue){
+        return orders.stream().filter(order -> order.getOrderId() == orderId).map(order -> order.getAmount()).findFirst().orElse(defaultValue);
+    }
+
+    public static Order getOrderOrThrow(List<Order> orders, long orderId){
+        return orders.stream().filter(order -> order.getOrderId() == orderId).findFirst().orElseThrow();
+    }
+
+    public static double getOrderAmountOrDefaultEager(List<Order> orders, long orderId, double defaultValue){
+        return orders.stream().filter(order -> order.getOrderId() == orderId).map(order -> order.getAmount()).findFirst().orElse(computeExpensiveDefault());
+    }
+
+    public static double getOrderAmountOrDefaultLazy(List<Order> orders, long orderId, double defaultValue){
+        return orders.stream().filter(order -> order.getOrderId() == orderId).map(order -> order.getAmount()).findFirst().orElse(computeExpensiveDefault());
+    }
+
+    private static double computeExpensiveDefault(){
+        System.out.println("Connecting to Database");
+        return 78.0;
+    }
+
 }

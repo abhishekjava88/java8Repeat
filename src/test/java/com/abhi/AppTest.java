@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import static com.abhi.model.Status.*;
 import static com.abhi.model.Status.CANCELLED;
@@ -122,5 +124,37 @@ class AppTest {
         );
 
         assertEquals(expectedResult,actualResults);
+    }
+
+    @Test
+    void findOrderById() {
+        Optional<Order> actualResult = App.findOrderById(orders,5);
+        assertEquals(new Order(5,SHIPPED,61.0),actualResult.get());
+    }
+
+    @Test
+    void getOrderAmountOrDefault() {
+        Double defaultValue = 50.0;
+        Double actualResult = App.getOrderAmountOrDefault(orders,78,defaultValue);
+        assertEquals(defaultValue,actualResult,0.01);
+    }
+
+    @Test
+    void getOrderOrThrow() {
+       assertThrows(NoSuchElementException.class,()->App.getOrderOrThrow(orders,78));
+    }
+
+    @Test
+    void getOrderAmountOrDefaultEager() {
+        Double defaultValue = 78.0;
+        Double actualResult = App.getOrderAmountOrDefaultEager(orders,78,defaultValue);
+        assertEquals(defaultValue,actualResult,0.01);
+    }
+
+    @Test
+    void getOrderAmountOrDefaultLazy() {
+        Double defaultValue =78.0;
+        Double actualResult = App.getOrderAmountOrDefaultLazy(orders,78,defaultValue);
+        assertEquals(defaultValue,actualResult,0.01);
     }
 }
