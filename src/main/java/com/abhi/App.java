@@ -18,7 +18,9 @@ public class App
 {
     public static Predicate<Order> amountFilter = order -> order.getAmount() > 0;
     public static Predicate<Order> pendingFilter = order -> order.getStatus() == PENDING;
-    //public static Comparator<Order> amountComparator = (a,b)-> a.
+    public static Comparator<Order> amountComparator = Comparator.comparing(Order::getAmount);
+    public static Comparator<Order> StatusComparator = Comparator.comparing(Order::getStatus);
+    public static Comparator<Order> statusAndAmountComparator = StatusComparator.thenComparing(amountComparator);
 
 
     public static void main( String[] args )
@@ -45,6 +47,7 @@ public class App
         System.out.println(summarize(orders));
         System.out.println(pendingAndHighValue(orders,61));
         System.out.println(sumUsingReduce(orders));
+        System.out.println(sortByStatusThenAmount(orders));
 
     }
 
@@ -81,6 +84,12 @@ public class App
         return orders.stream().filter(pendingFilter).anyMatch(order -> order.getAmount()>threshold);
     }
 
+    public static List<Order> topNByAmount(List<Order> orders, int n){
+        return orders.stream().sorted(amountComparator.reversed()).limit(n).toList();
+    }
 
+    public static List<Order> sortByStatusThenAmount(List<Order> orders){
+        return orders.stream().sorted(statusAndAmountComparator).toList();
+    }
 
 }

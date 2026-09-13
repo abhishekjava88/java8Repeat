@@ -52,7 +52,7 @@ class AppTest {
     @Test
     void testCountByStatus() {
         Map<Status, Long> result = App.countByStatus(orders);
-        Long expectedResult = 4l;
+        Long expectedResult = 4L;
         assertEquals(result.get(CANCELLED),expectedResult);
     }
 
@@ -93,5 +93,34 @@ class AppTest {
     void hasOverdueHighValue() {
        boolean actaulResults = App.hasOverdueHighValue(orders,61.0);
        assertTrue(actaulResults);
+    }
+
+    @Test
+    void topNByAmount() {
+       List<Order> actualResults = App.topNByAmount(orders,2);
+       List<Order> expectedResults = List.of(new Order(2,PENDING,89),new Order(4,SHIPPED,78.0));
+       assertEquals(expectedResults,actualResults);
+    }
+
+    @Test
+    void sortByStatusThenAmount() {
+        List<Order> actualResults = App.sortByStatusThenAmount(orders);
+        List<Order> expectedResult =  List.of(
+                new Order(3,PENDING,42.0),
+                new Order(1,PENDING,56.0),
+                new Order(2,PENDING,89),
+
+                new Order(6,SHIPPED,42.0),
+                new Order(5,SHIPPED,61.0),
+                new Order(4,SHIPPED,78.0),
+
+
+                new Order(9,CANCELLED,-36.0),
+                new Order(10,CANCELLED,9.0),
+                new Order(8,CANCELLED,46.0),
+                new Order(7,CANCELLED,55.0)
+        );
+
+        assertEquals(expectedResult,actualResults);
     }
 }
